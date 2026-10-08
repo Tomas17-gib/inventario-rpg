@@ -81,20 +81,40 @@ function comprarObjeto (nombre, cantidad) {
         
 }
 
+function venderObjeto(nombre, cantidad) {
+    const objeto = inventario.find(item => item.nombre.toLowerCase() === nombre.toLowerCase());
+
+    if (!objeto || cantidad <= 0 || cantidad > objeto.cantidad) {
+        console.log('No se pudo vender: revisa el nombre o la cantidad');
+        return;
+    }
+
+    oro += objeto.precio * cantidad;
+    objeto.cantidad -= cantidad;
+
+    if (objeto.cantidad === 0) {
+        const posicion = inventario.indexOf(objeto);
+        inventario.splice(posicion, 1);
+    }
+
+    console.log(`Vendiste ${cantidad} x ${objeto.nombre}. Oro actual: ${oro}`);
+}
+
 while (juegoActivo) {
     console.log('\n====== INVENTARIO ======');
     console.log(`Jugador: ${nombreJugador}  |  Oro: ${oro}\n`);
     console.log('1. Ver inventario');
     console.log('2. Ir a la tienda');
     console.log('3. Ver valor total');
-    console.log('4. Salir');
+    console.log('4. Vender objeto');
+    console.log('5. Salir');
 
-    const opcion = readlineSync.question('Elige una opcion: '); 
+    const opcion = readlineSync.question('Elige una opcion: ');
 
     if (opcion === '1') {
         mostrarInventario();
     } else if (opcion === '2') {
-        console.log('\n----- TIENDA -----');
+        console.log('\n--- TIENDA ---');
         for (let i = 0; i < tienda.length; i++) {
             console.log(`${i + 1}. ${tienda[i].nombre} | ${tienda[i].tipo} | Precio: ${tienda[i].precio} | Stock: ${tienda[i].cantidad}`);
         }
@@ -106,11 +126,16 @@ while (juegoActivo) {
     } else if (opcion === '3') {
         console.log(`Valor total del inventario: ${calcularTotal()}`);
     } else if (opcion === '4') {
+        mostrarInventario();
+
+        const nombre = readlineSync.question('Que objeto quieres vender? ');
+        const cantidad = Number(readlineSync.question('Cuantas unidades? '));
+
+        venderObjeto(nombre, cantidad);
+    } else if (opcion === '5') {
         juegoActivo = false;
         console.log('chao pescado');
     } else {
         console.log('Opcion invalida, intenta de nuevo.');
     }
-    
-
 }
