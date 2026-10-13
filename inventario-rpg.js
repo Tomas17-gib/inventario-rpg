@@ -84,7 +84,7 @@ function comprarObjeto (nombre, cantidad) {
 function venderObjeto(nombre, cantidad) {
     const objeto = inventario.find(item => item.nombre.toLowerCase() === nombre.toLowerCase());
 
-    if (!objeto || cantidad <= 0 || cantidad < objeto.cantidad) {
+    if (!objeto || cantidad <= 0 || cantidad > objeto.cantidad) {
         console.log('No se pudo vender: revisa el nombre o la cantidad');
         return;
     }
